@@ -9,9 +9,9 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedHour, setSelectedHour] = useState(null);
 
-  // Sadece seçili kuaförün randevuları
+  // Sadece seçili kuaförün ve seçili tarihin randevuları
   const filteredAppointments = appointments.filter(
-    (a) => a.kuafor === kuafor && (!selectedDate || a.date === selectedDate)
+    (a) => a.kuafor === kuafor && a.date === selectedDate
   );
 
   // Meşgul saatler
