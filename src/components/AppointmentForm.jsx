@@ -165,7 +165,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
           );
         })}
       </div>
-      <button type="submit" disabled={hour === null}>Randevu Al</button>
+      <button type="submit" disabled={!name || !surname || !phone || !date || hour === null}>Randevu Al</button>
       {successMessage && (
         <div style={{
           background: "#27ae60",
