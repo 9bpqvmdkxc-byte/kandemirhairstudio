@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import DatePicker from "../components/DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
-const workers = ["⭐ Ömer Kandemir (Müdür)", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
+const workers = ["⭐ Ömer Kandemir", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
 
 export default function AdminPanel({ appointments, cancelAppointment, busyHours, setBusyHours }) {
-  const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir (Müdür)");
+  const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedHour, setSelectedHour] = useState(null);
 
