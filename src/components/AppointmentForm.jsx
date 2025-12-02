@@ -14,6 +14,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
   const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir");
   const [service, setService] = useState("Saç");
   const [successMessage, setSuccessMessage] = useState(false);
+  const [successName, setSuccessName] = useState("");
 
   const isHourBusy = (h) =>
     appointments.some(
@@ -30,6 +31,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
     e.preventDefault();
     if (!name || !surname || !phone || !date || hour === null) return;
     addAppointment({ name, surname, phone, date, hour, kuafor, service });
+    setSuccessName(`${name[0]}.${surname[0]}`);
     setSuccessMessage(true);
     setTimeout(() => setSuccessMessage(false), 3000);
     setName("");
@@ -132,7 +134,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
           fontWeight: "bold",
           animation: "fadeInOut 3s"
         }}>
-          ✅ Randevu oluşturuldu!
+          ✅ Randevu oluşturuldu! - {successName}
         </div>
       )}
     </form>
