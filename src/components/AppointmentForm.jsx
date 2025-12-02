@@ -120,11 +120,18 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
                 minWidth: "70px",
                 cursor: busy ? "not-allowed" : "pointer",
                 fontWeight: selected ? "bold" : "normal",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "12px",
+                lineHeight: "1.2"
               }}
               disabled={busy}
               onClick={() => setHour(h)}
             >
-              {label}
+              <div>{h}:00</div>
+              {initials && <div style={{ fontSize: "10px", marginTop: "2px" }}>{initials}</div>}
             </button>
           );
         })}
