@@ -16,7 +16,12 @@ export default function App() {
     const loadAppointments = async () => {
       try {
         const fbAppointments = await getAllAppointments();
-        setAppointments(fbAppointments);
+        // Eski randevulara status ekle (eğer yoksa)
+        const appointmentsWithStatus = fbAppointments.map(app => ({
+          ...app,
+          status: app.status || "pending"
+        }));
+        setAppointments(appointmentsWithStatus);
       } catch (error) {
         console.error("Randevuları yükleme hatası:", error);
       } finally {
