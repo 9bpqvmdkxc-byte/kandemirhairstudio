@@ -1,14 +1,14 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, setDoc, getDoc } from 'firebase/firestore';
 
-// Firebase Config - .env.local'dan al
+// Firebase Config - Doğrudan yapılandırılmış
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyABFVnGZvo1Gfq2buHUF8eY0FEpRbsm6F8",
+  authDomain: "kandemirhairstudio.firebaseapp.com",
+  projectId: "kandemirhairstudio",
+  storageBucket: "kandemirhairstudio.firebasestorage.app",
+  messagingSenderId: "741412017428",
+  appId: "1:741412017428:web:f4f9f4285e339150c61e01"
 };
 
 const app = initializeApp(firebaseConfig);
