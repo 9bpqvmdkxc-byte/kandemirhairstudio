@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <!-- Arka plan - saç kesimi teması -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#34495e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a252f;stop-opacity:1" />
+    </linearGradient>
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+    </filter>
+  </defs>
+  
+  <!-- Ana arka plan -->
+  <rect width="1920" height="1080" fill="url(#bgGrad)"/>
+  
+  <!-- Dekoratif elemanlar - Barber tarzı -->
+  <circle cx="100" cy="200" r="80" fill="#e74c3c" opacity="0.15" filter="url(#blur)"/>
+  <circle cx="1800" cy="800" r="150" fill="#3498db" opacity="0.15" filter="url(#blur)"/>
+  <circle cx="960" cy="540" r="200" fill="#2ecc71" opacity="0.1" filter="url(#blur)"/>
+  
+  <!-- Makas desenleri -->
+  <g opacity="0.05" transform="translate(300, 300) scale(2)">
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#fff" stroke-width="1"/>
+    <circle cx="20" cy="0" r="8" fill="none" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#fff" stroke-width="1"/>
+  </g>
+  
+  <g opacity="0.05" transform="translate(1600, 800) scale(2.5)">
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#fff" stroke-width="1"/>
+    <circle cx="20" cy="0" r="8" fill="none" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#fff" stroke-width="1"/>
+  </g>
+  
+  <!-- Şerit desenleri (barber pole) -->
+  <line x1="0" y1="0" x2="1920" y2="1080" stroke="#e74c3c" stroke-width="40" opacity="0.03"/>
+  <line x1="1920" y1="0" x2="0" y2="1080" stroke="#fff" stroke-width="20" opacity="0.02"/>
+  
+  <!-- Metni tut yazısı -->
+  <text x="960" y="540" font-size="200" fill="#fff" opacity="0.03" text-anchor="middle" font-family="Arial">✂️</text>
+</svg>
