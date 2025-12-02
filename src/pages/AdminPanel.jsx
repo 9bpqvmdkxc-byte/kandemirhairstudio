@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DatePicker from "../components/DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
-const workers = ["Ömer Kandemir", "Ahmet"];
+const workers = ["Ömer Kandemir", "Muhammet Ali Kandemir", "Velat bukan", "Eyüp özdoğan"];
 
 export default function AdminPanel({ appointments, cancelAppointment, busyHours, setBusyHours }) {
   const [kuafor, setKuafor] = useState("Ömer Kandemir");
@@ -118,40 +118,70 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
         )}
         
         {selectedDate && selectedHour !== null && (
-          <button
-            style={{
-              background: busyHours[selectedDate]?.[kuafor]?.includes(selectedHour) ? "#888" : "#f1c40f",
-              color: "#222",
-              border: "none",
-              borderRadius: "6px",
-              padding: "10px 16px",
-              marginTop: "12px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              transition: "all 0.2s"
-            }}
-            onClick={() => {
-              setBusyHours((prev) => {
-                const prevDay = prev[selectedDate] || {};
-                const prevKuafor = prevDay[kuafor] || [];
-                let newKuafor;
-                if (prevKuafor.includes(selectedHour)) {
-                  newKuafor = prevKuafor.filter((h) => h !== selectedHour);
-                } else {
-                  newKuafor = [...prevKuafor, selectedHour];
-                }
-                return {
-                  ...prev,
-                  [selectedDate]: {
-                    ...prevDay,
-                    [kuafor]: newKuafor,
-                  },
-                };
-              });
-            }}
-          >
-            {busyHours[selectedDate]?.[kuafor]?.includes(selectedHour) ? "Meşgulden Çıkar" : "Meşgul Yap"}
-          </button>
+          <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+            <button
+              style={{
+                background: busyHours[selectedDate]?.[kuafor]?.includes(selectedHour) ? "#888" : "#f1c40f",
+                color: "#222",
+                border: "none",
+                borderRadius: "6px",
+                padding: "10px 16px",
+                cursor: "pointer",
+                fontWeight: "bold",
+                transition: "all 0.2s"
+              }}
+              onClick={() => {
+                setBusyHours((prev) => {
+                  const prevDay = prev[selectedDate] || {};
+                  const prevKuafor = prevDay[kuafor] || [];
+                  let newKuafor;
+                  if (prevKuafor.includes(selectedHour)) {
+                    newKuafor = prevKuafor.filter((h) => h !== selectedHour);
+                  } else {
+                    newKuafor = [...prevKuafor, selectedHour];
+                  }
+                  return {
+                    ...prev,
+                    [selectedDate]: {
+                      ...prevDay,
+                      [kuafor]: newKuafor,
+                    },
+                  };
+                });
+              }}
+            >
+              {busyHours[selectedDate]?.[kuafor]?.includes(selectedHour) ? "Meşgulden Çıkar" : "Meşgul Yap"}
+            </button>
+
+            <button
+              style={{
+                background: "#e74c3c",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                padding: "10px 16px",
+                cursor: "pointer",
+                fontWeight: "bold",
+                transition: "all 0.2s"
+              }}
+              onClick={() => {
+                setBusyHours((prev) => {
+                  const prevDay = prev[selectedDate] || {};
+                  const allHours = Array.from({ length: 14 }, (_, i) => 9 + i);
+                  return {
+                    ...prev,
+                    [selectedDate]: {
+                      ...prevDay,
+                      [kuafor]: allHours,
+                    },
+                  };
+                });
+                setSelectedHour(null);
+              }}
+            >
+              🚫 Tüm Gün Kapalı
+            </button>
+          </div>
         )}
       </div>
 
