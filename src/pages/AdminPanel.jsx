@@ -84,6 +84,13 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 );
                 const isBusy = busyHours[selectedDate]?.[kuafor]?.includes(h) || hasAppointment;
                 const selected = selectedHour === h;
+                
+                // Randevu yapan kişinin baş harflerini bul
+                const appointment = appointments.find(
+                  (a) => a.date === selectedDate && a.hour === h && a.kuafor === kuafor
+                );
+                const initials = appointment ? `${appointment.name[0]}.${appointment.surname[0]}` : "";
+                
                 let bg = "#4caf50";
                 let textColor = "#fff";
                 
@@ -108,11 +115,18 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                       minWidth: "70px",
                       cursor: "pointer",
                       fontWeight: selected || isBusy ? "bold" : "normal",
-                      transition: "all 0.2s"
+                      transition: "all 0.2s",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      lineHeight: "1.2"
                     }}
                     onClick={() => setSelectedHour(h)}
                   >
-                    {h}:00 {isBusy ? "MEŞGUL" : ""}
+                    <div>{h}:00</div>
+                    {initials && <div style={{ fontSize: "10px", marginTop: "2px" }}>{initials}</div>}
                   </button>
                 );
               })}
