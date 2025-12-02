@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DatePicker from "./DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
@@ -15,16 +15,6 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
   const [service, setService] = useState("Saç");
   const [successMessage, setSuccessMessage] = useState(false);
   const [successName, setSuccessName] = useState("");
-
-  // Sayfa açıldığında bugünün tarihini set et
-  useEffect(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const todayStr = `${year}-${month}-${day}`;
-    setDate(todayStr);
-  }, []);
 
   const isHourBusy = (h) =>
     appointments.some(
@@ -124,6 +114,12 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
           }
           
           const handleHourClick = () => {
+            // Tarih seçilmemişse uyar
+            if (!date) {
+              alert("Lütfen önce bir tarih seçin!");
+              return;
+            }
+            
             // Eğer randevu varsa ve müşteri kendi randevusu ise iptal edebilsin
             if (appointment && name && surname && 
                 appointment.name === name && appointment.surname === surname) {

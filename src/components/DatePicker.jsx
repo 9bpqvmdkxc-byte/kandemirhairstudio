@@ -1,24 +1,18 @@
 import React, { useState, useMemo } from "react";
 
 export default function DatePicker({ value, onChange }) {
-  // value'den bugün'ü hesapla (value zaten YYYY-MM-DD formatında)
-  const getToday = () => {
-    if (!value) {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-    return value;
+  const [displayMonth, setDisplayMonth] = useState(new Date());
+
+  // Bugün'ü hesapla (locale timezone'da)
+  const getTodayStr = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
-  const todayStr = getToday();
-  const [year, month, day] = todayStr.split('-').map(Number);
-  const today = new Date(year, month - 1, day);
-  today.setHours(0, 0, 0, 0);
-
-  const [displayMonth, setDisplayMonth] = useState(new Date(year, month - 1));
+  const todayStr = getTodayStr();
 
   const daysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
@@ -51,8 +45,8 @@ export default function DatePicker({ value, onChange }) {
 
   const isToday = (day) => {
     if (!day) return false;
-    const date = new Date(displayMonth.getFullYear(), displayMonth.getMonth(), day);
-    return date.toDateString() === today.toDateString();
+    const dateStr = formatDate(day);
+    return dateStr === todayStr;
   };
 
   const isSelected = (day) => {
@@ -62,8 +56,8 @@ export default function DatePicker({ value, onChange }) {
 
   const isBeforeToday = (day) => {
     if (!day) return false;
-    const date = new Date(displayMonth.getFullYear(), displayMonth.getMonth(), day);
-    return date < today;
+    const dateStr = formatDate(day);
+    return dateStr < todayStr;
   };
 
   const handlePrevMonth = () => {
