@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppointmentForm from "./components/AppointmentForm";
 import AdminPanel from "./pages/AdminPanel";
+import { getAllAppointments, addAppointment as fbAddAppointment, deleteAppointment as fbDeleteAppointment } from "./utils/firebase";
 
 export default function App() {
   const [appointments, setAppointments] = useState([]);
@@ -8,16 +9,53 @@ export default function App() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const addAppointment = (appointment) => {
-    setAppointments([...appointments, appointment]);
+  // Sayfa yüklendiğinde Firebase'den randevuları çek
+  useEffect(() => {
+    const loadAppointments = async () => {
+      try {
+        const fbAppointments = await getAllAppointments();
+        setAppointments(fbAppointments);
+      } catch (error) {
+        console.error("Randevuları yükleme hatası:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAppointments();
+  }, []);
+
+  const addAppointment = async (appointment) => {
+    try {
+      // Firebase'e kaydet
+      const result = await fbAddAppointment(appointment);
+      if (result.success) {
+        // State'e ekle (Firebase id ile)
+        setAppointments([...appointments, { id: result.id, ...appointment }]);
+      }
+    } catch (error) {
+      console.error("Randevu ekleme hatası:", error);
+      alert("Randevu eklenirken hata oluştu!");
+    }
     
     // SMS gönderme (isteğe bağlı - API konfigürasyonu gerekli)
     // sendAppointmentConfirmationSMS(appointment.phone, appointment);
   };
 
-  const cancelAppointment = (index) => {
-    setAppointments(appointments.filter((_, i) => i !== index));
+  const cancelAppointment = async (index) => {
+    try {
+      const appointment = appointments[index];
+      if (appointment.id) {
+        // Firebase'den sil
+        await fbDeleteAppointment(appointment.id);
+      }
+      // State'ten sil
+      setAppointments(appointments.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error("Randevu silme hatası:", error);
+      alert("Randevu silinirken hata oluştu!");
+    }
   };
 
   const handleAdminLogin = (e) => {
