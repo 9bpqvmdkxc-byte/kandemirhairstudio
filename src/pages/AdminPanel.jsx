@@ -85,11 +85,11 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 let textColor = "#fff";
                 
                 if (isBusy) {
-                  bg = "#f1c40f";
-                  textColor = "#222";
-                } else if (selected) {
                   bg = "#e74c3c";
                   textColor = "#fff";
+                } else if (selected) {
+                  bg = "#f1c40f";
+                  textColor = "#222";
                 }
                 
                 return (
