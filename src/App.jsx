@@ -124,6 +124,105 @@ export default function App() {
             setBusyHours={setBusyHours}
             isAdmin={false}
           />
+          
+          {/* Konum Bilgileri */}
+          <div style={{
+            marginTop: "2rem",
+            padding: "1.5rem",
+            background: "#455a64",
+            borderRadius: "8px"
+          }}>
+            <h3 style={{ color: "#ecf0f1", margin: "0 0 1rem 0", textAlign: "center" }}>📍 Bizi Ziyaret Edin</h3>
+
+            {/* Çalışma Saatleri */}
+            <div style={{ marginBottom: "1.5rem" }}>
+              <p style={{ color: "#ecf0f1", fontWeight: "600", margin: "0 0 0.5rem 0" }}>⏰ Çalışma Saatleri:</p>
+              <p style={{ color: "#b0bec5", margin: "0.5rem 0", fontSize: "0.9rem" }}>
+                Pazartesi - Cumartesi: 09:00 - 22:00<br />
+                Pazar: Kapalı
+              </p>
+            </div>
+
+            {/* Harita Butonları */}
+            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+              <p style={{ color: "#ecf0f1", fontWeight: "600", margin: "0 0 1rem 0" }}>
+                ↓ Yol Tarifini Aç ↓
+              </p>
+              <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap" }}>
+                <a
+                  href="https://maps.google.com/?q=41.071297,28.753583"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    background: "#3498db",
+                    color: "#fff",
+                    padding: "12px 20px",
+                    borderRadius: "6px",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    transition: "all 0.3s",
+                    border: "none",
+                    fontSize: "0.95rem"
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.background = "#2980b9";
+                    e.target.style.boxShadow = "0 4px 12px rgba(52, 152, 219, 0.3)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = "#3498db";
+                    e.target.style.boxShadow = "none";
+                  }}
+                >
+                  🗺️ Google Maps
+                </a>
+                
+                <a
+                  href="https://yandex.com.tr/maps/?pt=28.753583,41.071297&z=15"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    background: "#e74c3c",
+                    color: "#fff",
+                    padding: "12px 20px",
+                    borderRadius: "6px",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    transition: "all 0.3s",
+                    border: "none",
+                    fontSize: "0.95rem"
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.background = "#c0392b";
+                    e.target.style.boxShadow = "0 4px 12px rgba(231, 76, 60, 0.3)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = "#e74c3c";
+                    e.target.style.boxShadow = "none";
+                  }}
+                >
+                  🗺️ Yandex Maps
+                </a>
+              </div>
+            </div>
+
+            {/* Mesaj */}
+            <div style={{
+              background: "#546e7a",
+              padding: "1rem",
+              borderRadius: "6px",
+              textAlign: "center",
+              borderLeft: "4px solid #3498db"
+            }}>
+              <p style={{ color: "#ecf0f1", fontWeight: "600", margin: "0" }}>
+                ✂️ Buradan bize gelebilirsiniz!
+              </p>
+              <p style={{ color: "#b0bec5", margin: "0.5rem 0 0 0", fontSize: "0.9rem" }}>
+                Randevu almak için üstteki formu kullanın
+              </p>
+            </div>
+          </div>
         </>
       )}
       {isAdmin && (
