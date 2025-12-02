@@ -30,7 +30,9 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !surname || !phone || !date || hour === null) return;
-    addAppointment({ name, surname, phone, date, hour, kuafor, service });
+    
+    const newAppointment = { name, surname, phone, date, hour, kuafor, service };
+    addAppointment(newAppointment); // Firebase'e gönder (async)
     setSuccessName(`${name[0]}.${surname[0]}`);
     setSuccessMessage(true);
     

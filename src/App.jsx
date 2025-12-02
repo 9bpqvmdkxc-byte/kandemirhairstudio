@@ -27,13 +27,13 @@ export default function App() {
   }, []);
 
   const addAppointment = async (appointment) => {
+    // Hemen state'e ekle (optimistic update)
+    const appointmentWithId = { id: Date.now().toString(), ...appointment };
+    setAppointments([...appointments, appointmentWithId]);
+    
     try {
-      // Firebase'e kaydet
-      const result = await fbAddAppointment(appointment);
-      if (result.success) {
-        // State'e ekle (Firebase id ile)
-        setAppointments([...appointments, { id: result.id, ...appointment }]);
-      }
+      // Firebase'e asenkron kaydet
+      await fbAddAppointment(appointment);
     } catch (error) {
       console.error("Randevu ekleme hatası:", error);
       alert("Randevu eklenirken hata oluştu!");
