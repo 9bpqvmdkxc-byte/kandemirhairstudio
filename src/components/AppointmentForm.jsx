@@ -86,12 +86,19 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
           const busy = isHourBusy(h);
           const meşgul = isHourMeşgul(h);
           const selected = hour === h;
+          
+          // Randevu yapan kişinin baş harflerini bul
+          const appointment = appointments.find(
+            (a) => a.date === date && a.hour === h && a.kuafor === kuafor
+          );
+          const initials = appointment ? `${appointment.name[0]}.${appointment.surname[0]}` : "";
+          
           let bg = "#4caf50"; // yeşil
           let label = `${h}:00`;
           
           if (busy) {
             bg = "#e74c3c"; // kırmızı - randevu alınmış
-            label = `${h}:00 DOLU`;
+            label = `${h}:00 ${initials}`;
           } else if (meşgul) {
             bg = "#f1c40f"; // sarı - meşgul saati
             label = `${h}:00 MEŞGUL`;
