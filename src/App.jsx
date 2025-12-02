@@ -122,6 +122,7 @@ export default function App() {
             appointments={appointments}
             busyHours={busyHours}
             setBusyHours={setBusyHours}
+            cancelAppointment={cancelAppointment}
             isAdmin={false}
           />
           

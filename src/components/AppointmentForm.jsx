@@ -5,7 +5,7 @@ const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
 const services = ["Saç", "Sakal", "Saç + Sakal", "Çocuk Saçı", "Saç Yıkama", "Fön", "Keratin", "Cilt Bakımı", "Damat Traşı"];
 const workers = ["⭐ Ömer Kandemir", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
 
-export default function AppointmentForm({ addAppointment, appointments, busyHours }) {
+export default function AppointmentForm({ addAppointment, appointments, busyHours, cancelAppointment }) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [phone, setPhone] = useState("");
@@ -107,6 +107,22 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
             label = `${h}:00`;
           }
           
+          const handleHourClick = () => {
+            // Eğer randevu varsa ve müşteri kendi randevusu ise iptal edebilsin
+            if (appointment && name && surname && 
+                appointment.name === name && appointment.surname === surname) {
+              const appointmentIndex = appointments.findIndex(
+                (a) => a.date === date && a.hour === h && a.kuafor === kuafor
+              );
+              if (appointmentIndex !== -1) {
+                cancelAppointment(appointmentIndex);
+                setHour(null);
+              }
+            } else if (!busy) {
+              setHour(h);
+            }
+          };
+
           return (
             <button
               key={h}
@@ -118,7 +134,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
                 borderRadius: "6px",
                 padding: "8px",
                 minWidth: "70px",
-                cursor: busy ? "not-allowed" : "pointer",
+                cursor: busy && appointment && name && surname && appointment.name === name && appointment.surname === surname ? "pointer" : busy ? "not-allowed" : "pointer",
                 fontWeight: selected ? "bold" : "normal",
                 display: "flex",
                 flexDirection: "column",
@@ -127,8 +143,9 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
                 fontSize: "12px",
                 lineHeight: "1.2"
               }}
-              disabled={busy}
-              onClick={() => setHour(h)}
+              disabled={busy && !(appointment && name && surname && appointment.name === name && appointment.surname === surname)}
+              onClick={handleHourClick}
+              title={appointment && name && surname && appointment.name === name && appointment.surname === surname ? "Randevuyu iptal etmek için tıkla" : ""}
             >
               <div>{h}:00</div>
               {initials && <div style={{ fontSize: "10px", marginTop: "2px" }}>{initials}</div>}
