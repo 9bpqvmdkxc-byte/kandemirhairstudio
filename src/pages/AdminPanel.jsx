@@ -4,7 +4,7 @@ import DatePicker from "../components/DatePicker";
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
 const workers = ["⭐ Ömer Kandemir", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
 
-export default function AdminPanel({ appointments, cancelAppointment, busyHours, setBusyHours }) {
+export default function AdminPanel({ appointments, cancelAppointment, busyHours, setBusyHours, confirmAppointment }) {
   const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedHour, setSelectedHour] = useState(null);
@@ -241,8 +241,8 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
           <div
             key={idx}
             style={{
-              background: "linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%)",
-              border: "1px solid #e0e7ef",
+              background: app.status === "confirmed" ? "linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)" : "linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%)",
+              border: app.status === "confirmed" ? "2px solid #28a745" : "2px solid #ffc107",
               borderRadius: "10px",
               padding: "16px",
               display: "flex",
@@ -262,8 +262,8 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 <span style={{ 
                   fontWeight: "bold", 
                   fontSize: "1.1rem",
-                  background: "#222",
-                  color: "#fff",
+                  background: app.status === "confirmed" ? "#28a745" : "#ffc107",
+                  color: app.status === "confirmed" ? "#fff" : "#333",
                   padding: "6px 12px",
                   borderRadius: "6px",
                   minWidth: "100px",
@@ -273,6 +273,16 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 </span>
                 <span style={{ color: "#666", fontSize: "0.9rem" }}>
                   {app.date}
+                </span>
+                <span style={{ 
+                  color: app.status === "confirmed" ? "#28a745" : "#ff9800",
+                  fontSize: "0.85rem",
+                  fontWeight: "bold",
+                  background: app.status === "confirmed" ? "#d4edda" : "#ffe8d6",
+                  padding: "4px 8px",
+                  borderRadius: "4px"
+                }}>
+                  {app.status === "confirmed" ? "✅ Onaylandı" : "⏳ Beklemede"}
                 </span>
               </div>
               
@@ -289,25 +299,46 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
               </div>
             </div>
             
-            <button
-              onClick={() => cancelAppointment(appointments.indexOf(app))}
-              style={{
-                background: "#e74c3c",
-                color: "#fff",
-                border: "none",
-                borderRadius: "6px",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: "bold",
-                transition: "all 0.2s",
-                whiteSpace: "nowrap",
-                marginLeft: "16px"
-              }}
-              onMouseOver={(e) => e.target.style.background = "#c0392b"}
-              onMouseOut={(e) => e.target.style.background = "#e74c3c"}
-            >
-              Sil
-            </button>
+            <div style={{ display: "flex", gap: "10px", marginLeft: "16px" }}>
+              {app.status !== "confirmed" && (
+                <button
+                  onClick={() => confirmAppointment(appointments.indexOf(app))}
+                  style={{
+                    background: "#28a745",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "8px 16px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    transition: "all 0.2s",
+                    whiteSpace: "nowrap"
+                  }}
+                  onMouseOver={(e) => e.target.style.background = "#218838"}
+                  onMouseOut={(e) => e.target.style.background = "#28a745"}
+                >
+                  ✅ Onayla
+                </button>
+              )}
+              <button
+                onClick={() => cancelAppointment(appointments.indexOf(app))}
+                style={{
+                  background: "#e74c3c",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap"
+                }}
+                onMouseOver={(e) => e.target.style.background = "#c0392b"}
+                onMouseOut={(e) => e.target.style.background = "#e74c3c"}
+              >
+                Sil
+              </button>
+            </div>
           </div>
         ))}
       </div>

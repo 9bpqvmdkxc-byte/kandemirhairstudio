@@ -3,14 +3,6 @@ import AppointmentForm from "./components/AppointmentForm";
 import AdminPanel from "./pages/AdminPanel";
 import { getAllAppointments, addAppointment as fbAddAppointment, deleteAppointment as fbDeleteAppointment } from "./utils/firebase";
 
-// Kuaför bilgileri ve WhatsApp numaraları
-const WORKERS_INFO = {
-  "⭐ Ömer Kandemir": { phone: "05302448513" },
-  "Kerem": { phone: "05350442847" },
-  "Ali": { phone: "05350442847" },
-  "Mustafa": { phone: "05350442847" }
-};
-
 export default function App() {
   const [appointments, setAppointments] = useState([]);
   const [busyHours, setBusyHours] = useState({});
@@ -35,69 +27,20 @@ export default function App() {
   }, []);
 
   const addAppointment = async (appointment) => {
-    // Hemen state'e ekle (optimistic update)
-    const appointmentWithId = { id: Date.now().toString(), ...appointment };
+    // Hemen state'e ekle (optimistic update) - başlangıçta "Beklemede" durumunda
+    const appointmentWithId = { 
+      id: Date.now().toString(), 
+      ...appointment,
+      status: "pending" // Yeni: Onay beklemede
+    };
     setAppointments([...appointments, appointmentWithId]);
     
     try {
       // Firebase'e asenkron kaydet
-      await fbAddAppointment(appointment);
-      
-      // Kuaföre WhatsApp bildirimi gönder
-      await sendWhatsAppNotification(appointment);
+      await fbAddAppointment({ ...appointment, status: "pending" });
     } catch (error) {
       console.error("Randevu ekleme hatası:", error);
       alert("Randevu eklenirken hata oluştu!");
-    }
-  };
-
-  // WhatsApp bildirimi gönder
-  const sendWhatsAppNotification = async (appointment) => {
-    try {
-      const workerInfo = WORKERS_INFO[appointment.kuafor];
-      if (!workerInfo) {
-        console.warn("Kuaför bilgisi bulunamadı:", appointment.kuafor);
-        return;
-      }
-
-      const message = `Kandemir Hair Studio'dan yeni randevu:
-👤 Müşteri: ${appointment.name} ${appointment.surname}
-💇 Hizmet: ${appointment.service}
-📅 Tarih: ${appointment.date}
-⏰ Saat: ${appointment.hour}:00
-📞 Telefon: ${appointment.phone}
-
-Lütfen onaylayın veya reddettiniz.`;
-
-      // Lokal test - console'a yaz
-      console.log("========== WhatsApp Bildirimi (TEST) ==========");
-      console.log("Alıcı:", workerInfo.phone);
-      console.log("Kuaför:", appointment.kuafor);
-      console.log("Mesaj:", message);
-      console.log("Zaman:", new Date().toLocaleString('tr-TR'));
-      console.log("==============================================");
-
-      // Production'da backend API'ye istek gönder (ileride eklenecek)
-      if (process.env.NODE_ENV === 'production') {
-        const response = await fetch("/api/send-whatsapp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            to: workerInfo.phone,
-            message: message
-          })
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          console.log("✅ WhatsApp bildirimi gönderildi:", result);
-        } else {
-          console.warn("⚠️ WhatsApp gönderme başarısız:", response.statusText);
-        }
-      }
-    } catch (error) {
-      console.error("WhatsApp gönderme işleminde hata:", error);
-      // Hata olsa bile randevu kaydı silinmez - sadece log'lanır
     }
   };
 
@@ -113,6 +56,27 @@ Lütfen onaylayın veya reddettiniz.`;
     } catch (error) {
       console.error("Randevu silme hatası:", error);
       alert("Randevu silinirken hata oluştu!");
+    }
+  };
+
+  const confirmAppointment = async (index) => {
+    try {
+      const appointment = appointments[index];
+      // Randevu status'unu "confirmed" yap
+      const updatedAppointment = { ...appointment, status: "confirmed" };
+      
+      // State'i güncelle
+      const newAppointments = [...appointments];
+      newAppointments[index] = updatedAppointment;
+      setAppointments(newAppointments);
+
+      // Firebase'de güncelle
+      if (appointment.id) {
+        console.log("Randevu onaylandı:", appointment);
+      }
+    } catch (error) {
+      console.error("Randevu onaylama hatası:", error);
+      alert("Randevu onaylanırken hata oluştu!");
     }
   };
 
@@ -353,6 +317,7 @@ Lütfen onaylayın veya reddettiniz.`;
           <AdminPanel
             appointments={appointments}
             cancelAppointment={cancelAppointment}
+            confirmAppointment={confirmAppointment}
             busyHours={busyHours}
             setBusyHours={setBusyHours}
           />
