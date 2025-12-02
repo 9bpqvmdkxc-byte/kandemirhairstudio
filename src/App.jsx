@@ -3,6 +3,14 @@ import AppointmentForm from "./components/AppointmentForm";
 import AdminPanel from "./pages/AdminPanel";
 import { getAllAppointments, addAppointment as fbAddAppointment, deleteAppointment as fbDeleteAppointment } from "./utils/firebase";
 
+// Kuaför bilgileri ve WhatsApp numaraları
+const WORKERS_INFO = {
+  "⭐ Ömer Kandemir": { phone: "05302448513" },
+  "Kerem": { phone: "05350442847" },
+  "Ali": { phone: "05350442847" },
+  "Mustafa": { phone: "05350442847" }
+};
+
 export default function App() {
   const [appointments, setAppointments] = useState([]);
   const [busyHours, setBusyHours] = useState({});
@@ -34,13 +42,63 @@ export default function App() {
     try {
       // Firebase'e asenkron kaydet
       await fbAddAppointment(appointment);
+      
+      // Kuaföre WhatsApp bildirimi gönder
+      await sendWhatsAppNotification(appointment);
     } catch (error) {
       console.error("Randevu ekleme hatası:", error);
       alert("Randevu eklenirken hata oluştu!");
     }
-    
-    // SMS gönderme (isteğe bağlı - API konfigürasyonu gerekli)
-    // sendAppointmentConfirmationSMS(appointment.phone, appointment);
+  };
+
+  // WhatsApp bildirimi gönder
+  const sendWhatsAppNotification = async (appointment) => {
+    try {
+      const workerInfo = WORKERS_INFO[appointment.kuafor];
+      if (!workerInfo) {
+        console.warn("Kuaför bilgisi bulunamadı:", appointment.kuafor);
+        return;
+      }
+
+      const message = `Kandemir Hair Studio'dan yeni randevu:
+👤 Müşteri: ${appointment.name} ${appointment.surname}
+💇 Hizmet: ${appointment.service}
+📅 Tarih: ${appointment.date}
+⏰ Saat: ${appointment.hour}:00
+📞 Telefon: ${appointment.phone}
+
+Lütfen onaylayın veya reddettiniz.`;
+
+      // Lokal test - console'a yaz
+      console.log("========== WhatsApp Bildirimi (TEST) ==========");
+      console.log("Alıcı:", workerInfo.phone);
+      console.log("Kuaför:", appointment.kuafor);
+      console.log("Mesaj:", message);
+      console.log("Zaman:", new Date().toLocaleString('tr-TR'));
+      console.log("==============================================");
+
+      // Production'da backend API'ye istek gönder (ileride eklenecek)
+      if (process.env.NODE_ENV === 'production') {
+        const response = await fetch("/api/send-whatsapp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: workerInfo.phone,
+            message: message
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log("✅ WhatsApp bildirimi gönderildi:", result);
+        } else {
+          console.warn("⚠️ WhatsApp gönderme başarısız:", response.statusText);
+        }
+      }
+    } catch (error) {
+      console.error("WhatsApp gönderme işleminde hata:", error);
+      // Hata olsa bile randevu kaydı silinmez - sadece log'lanır
+    }
   };
 
   const cancelAppointment = async (index) => {
