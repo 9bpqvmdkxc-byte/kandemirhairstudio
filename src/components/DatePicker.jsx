@@ -131,7 +131,7 @@ export default function DatePicker({ value, onChange }) {
               disabled={disabled}
               style={{
                 aspectRatio: "1",
-                border: "1px solid #ddd",
+                border: selected ? "2px solid #222" : "1px solid #ddd",
                 borderRadius: "6px",
                 cursor: disabled ? "not-allowed" : "pointer",
                 fontWeight: selected || isCurrentDay ? "bold" : "normal",
