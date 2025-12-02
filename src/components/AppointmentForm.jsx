@@ -13,6 +13,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
   const [hour, setHour] = useState(null);
   const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir");
   const [service, setService] = useState("Saç");
+  const [successMessage, setSuccessMessage] = useState(false);
 
   const isHourBusy = (h) =>
     appointments.some(
@@ -29,6 +30,8 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
     e.preventDefault();
     if (!name || !surname || !phone || !date || hour === null) return;
     addAppointment({ name, surname, phone, date, hour, kuafor, service });
+    setSuccessMessage(true);
+    setTimeout(() => setSuccessMessage(false), 3000);
     setName("");
     setSurname("");
     setPhone("");
@@ -118,6 +121,20 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
         })}
       </div>
       <button type="submit" disabled={hour === null}>Randevu Al</button>
+      {successMessage && (
+        <div style={{
+          background: "#27ae60",
+          color: "#fff",
+          padding: "12px",
+          borderRadius: "6px",
+          marginTop: "12px",
+          textAlign: "center",
+          fontWeight: "bold",
+          animation: "fadeInOut 3s"
+        }}>
+          ✅ Randevu oluşturuldu!
+        </div>
+      )}
     </form>
   );
 }
