@@ -55,7 +55,7 @@ export default function DatePicker({ value = "", onChange }) {
   };
 
   const isSelected = (day) => {
-    if (!day) return false;
+    if (!day || !sanitizedValue) return false;
     const result = formatDate(day) === sanitizedValue;
     return result;
   };
