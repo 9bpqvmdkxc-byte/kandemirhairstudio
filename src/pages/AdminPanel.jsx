@@ -11,8 +11,12 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
 
   // Sayfa açıldığında bugünün tarihini set et
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD formatında
-    setSelectedDate(today);
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+    setSelectedDate(todayStr);
   }, []);
 
   // Sadece seçili kuaförün randevuları
