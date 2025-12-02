@@ -246,48 +246,51 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
               borderRadius: "10px",
               padding: "16px",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              flexDirection: "column",
+              gap: "12px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
               transition: "all 0.2s"
             }}
           >
-            <div style={{ flex: 1 }}>
+            {/* Üst kısım: Bilgiler */}
+            <div>
               <div style={{ 
                 display: "flex", 
                 alignItems: "center", 
                 gap: "12px",
-                marginBottom: "8px"
+                marginBottom: "10px",
+                flexWrap: "wrap"
               }}>
                 <span style={{ 
                   fontWeight: "bold", 
                   fontSize: "1.1rem",
                   background: app.status === "confirmed" ? "#28a745" : "#ffc107",
                   color: app.status === "confirmed" ? "#fff" : "#333",
-                  padding: "6px 12px",
+                  padding: "8px 14px",
                   borderRadius: "6px",
-                  minWidth: "100px",
+                  minWidth: "90px",
                   textAlign: "center"
                 }}>
                   {app.hour}:00
                 </span>
                 <span style={{ color: "#666", fontSize: "0.9rem" }}>
-                  {app.date}
+                  📅 {app.date}
                 </span>
                 <span style={{ 
                   color: app.status === "confirmed" ? "#28a745" : "#ff9800",
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   background: app.status === "confirmed" ? "#d4edda" : "#ffe8d6",
-                  padding: "4px 8px",
-                  borderRadius: "4px"
+                  padding: "6px 10px",
+                  borderRadius: "4px",
+                  marginLeft: "auto"
                 }}>
                   {app.status === "confirmed" ? "✅ Onaylandı" : "⏳ Beklemede"}
                 </span>
               </div>
               
-              <div style={{ marginLeft: "0px" }}>
-                <p style={{ margin: "6px 0", color: "#2d3748", fontWeight: "500" }}>
+              <div>
+                <p style={{ margin: "6px 0", color: "#2d3748", fontWeight: "600", fontSize: "1rem" }}>
                   👤 {app.name} {app.surname}
                 </p>
                 <p style={{ margin: "4px 0", color: "#666", fontSize: "0.95rem" }}>
@@ -298,8 +301,16 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 </p>
               </div>
             </div>
-            
-            <div style={{ display: "flex", gap: "10px", marginLeft: "16px" }}>
+
+            {/* Alt kısım: Butonlar */}
+            <div style={{ 
+              display: "flex", 
+              gap: "10px", 
+              justifyContent: "flex-end",
+              paddingTop: "8px",
+              borderTop: app.status === "confirmed" ? "1px solid rgba(40, 167, 69, 0.2)" : "1px solid rgba(255, 193, 7, 0.3)",
+              flexWrap: "wrap"
+            }}>
               {app.status !== "confirmed" && (
                 <button
                   onClick={() => confirmAppointment(appointments.indexOf(app))}
@@ -308,14 +319,21 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                     color: "#fff",
                     border: "none",
                     borderRadius: "6px",
-                    padding: "8px 16px",
+                    padding: "10px 18px",
                     cursor: "pointer",
                     fontWeight: "bold",
                     transition: "all 0.2s",
-                    whiteSpace: "nowrap"
+                    whiteSpace: "nowrap",
+                    fontSize: "0.95rem"
                   }}
-                  onMouseOver={(e) => e.target.style.background = "#218838"}
-                  onMouseOut={(e) => e.target.style.background = "#28a745"}
+                  onMouseOver={(e) => {
+                    e.target.style.background = "#218838";
+                    e.target.style.boxShadow = "0 2px 6px rgba(33, 136, 56, 0.3)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = "#28a745";
+                    e.target.style.boxShadow = "none";
+                  }}
                 >
                   ✅ Onayla
                 </button>
@@ -327,16 +345,23 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                   color: "#fff",
                   border: "none",
                   borderRadius: "6px",
-                  padding: "8px 16px",
+                  padding: "10px 18px",
                   cursor: "pointer",
                   fontWeight: "bold",
                   transition: "all 0.2s",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
+                  fontSize: "0.95rem"
                 }}
-                onMouseOver={(e) => e.target.style.background = "#c0392b"}
-                onMouseOut={(e) => e.target.style.background = "#e74c3c"}
+                onMouseOver={(e) => {
+                  e.target.style.background = "#c0392b";
+                  e.target.style.boxShadow = "0 2px 6px rgba(192, 57, 43, 0.3)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = "#e74c3c";
+                  e.target.style.boxShadow = "none";
+                }}
               >
-                Sil
+                🗑️ Sil
               </button>
             </div>
           </div>
