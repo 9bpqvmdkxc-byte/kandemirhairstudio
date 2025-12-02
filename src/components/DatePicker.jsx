@@ -131,7 +131,6 @@ export default function DatePicker({ value, onChange }) {
 
           const dateStr = formatDate(day);
           const selected = isSelected(day);
-          const isCurrentDay = isToday(day);
           const disabled = isBeforeToday(day);
 
           return (
@@ -145,9 +144,9 @@ export default function DatePicker({ value, onChange }) {
                 border: selected ? "2px solid #222" : "1px solid #ddd",
                 borderRadius: "6px",
                 cursor: disabled ? "not-allowed" : "pointer",
-                fontWeight: selected || isCurrentDay ? "bold" : "normal",
+                fontWeight: selected ? "bold" : "normal",
                 fontSize: "0.95rem",
-                background: selected ? "#222" : isCurrentDay ? "#e3f2fd" : disabled ? "#f0f0f0" : "#fff",
+                background: selected ? "#222" : disabled ? "#f0f0f0" : "#fff",
                 color: selected ? "#fff" : disabled ? "#ccc" : "#222",
                 transition: "all 0.2s"
               }}
