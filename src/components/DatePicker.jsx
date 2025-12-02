@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
 
 export default function DatePicker({ value = "", onChange }) {
-  const [displayMonth, setDisplayMonth] = useState(new Date());
+  // Bugün'ün ay'ını göster (başlangıçta)
+  const today = new Date();
+  const [displayMonth, setDisplayMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   
   // value'yi sanitize et - null veya undefined ise "" yap
   const sanitizedValue = value || "";
