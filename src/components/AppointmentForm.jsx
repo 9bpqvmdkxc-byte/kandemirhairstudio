@@ -33,14 +33,18 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
     addAppointment({ name, surname, phone, date, hour, kuafor, service });
     setSuccessName(`${name[0]}.${surname[0]}`);
     setSuccessMessage(true);
-    setTimeout(() => setSuccessMessage(false), 3000);
-    setName("");
-    setSurname("");
-    setPhone("");
-    setDate("");
-    setHour(null);
-    setKuafor("⭐ Ömer Kandemir");
-    setService("Saç");
+    
+    // 3 saniye sonra formu temizle
+    setTimeout(() => {
+      setSuccessMessage(false);
+      setName("");
+      setSurname("");
+      setPhone("");
+      setDate("");
+      setHour(null);
+      setKuafor("⭐ Ömer Kandemir");
+      setService("Saç");
+    }, 3000);
   };
 
   return (
