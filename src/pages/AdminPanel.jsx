@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "../components/DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
@@ -8,6 +8,12 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
   const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedHour, setSelectedHour] = useState(null);
+
+  // Sayfa açıldığında bugünün tarihini set et
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD formatında
+    setSelectedDate(today);
+  }, []);
 
   // Sadece seçili kuaförün randevuları
   const filteredAppointments = appointments.filter(

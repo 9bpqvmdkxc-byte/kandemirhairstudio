@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "./DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
@@ -15,6 +15,12 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
   const [service, setService] = useState("Saç");
   const [successMessage, setSuccessMessage] = useState(false);
   const [successName, setSuccessName] = useState("");
+
+  // Sayfa açıldığında bugünün tarihini set et
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD formatında
+    setDate(today);
+  }, []);
 
   const isHourBusy = (h) =>
     appointments.some(
