@@ -1,7 +1,10 @@
 import React, { useState, useMemo } from "react";
 
-export default function DatePicker({ value, onChange }) {
+export default function DatePicker({ value = "", onChange }) {
   const [displayMonth, setDisplayMonth] = useState(new Date());
+  
+  // value'yi sanitize et - null veya undefined ise "" yap
+  const sanitizedValue = value || "";
 
   // Bugün'ü hesapla (locale timezone'da)
   const getTodayStr = () => {
@@ -51,7 +54,8 @@ export default function DatePicker({ value, onChange }) {
 
   const isSelected = (day) => {
     if (!day) return false;
-    return formatDate(day) === value;
+    const result = formatDate(day) === sanitizedValue;
+    return result;
   };
 
   const isBeforeToday = (day) => {
@@ -157,9 +161,9 @@ export default function DatePicker({ value, onChange }) {
         })}
       </div>
 
-      {value && (
+      {sanitizedValue && (
         <div style={{ marginTop: "12px", textAlign: "center", color: "#666", fontSize: "0.9rem" }}>
-          Seçilen Tarih: <strong>{value}</strong>
+          Seçilen Tarih: <strong>{sanitizedValue}</strong>
         </div>
       )}
     </div>
