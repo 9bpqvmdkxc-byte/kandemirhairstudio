@@ -3,7 +3,7 @@ import DatePicker from "./DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
 const services = ["Saç", "Sakal", "Saç + Sakal", "Çocuk Saçı", "Saç Yıkama", "Fön", "Keratin", "Cilt Bakımı", "Damat Traşı"];
-const workers = ["⭐ Ömer Kandemir (Müdür)", "Muhammet Ali Kandemir", "Velat bukan", "Eyüp özdoğan"];
+const workers = ["⭐ Ömer Kandemir (Müdür)", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
 
 export default function AppointmentForm({ addAppointment, appointments, busyHours }) {
   const [name, setName] = useState("");
