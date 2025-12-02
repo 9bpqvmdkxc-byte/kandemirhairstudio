@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DatePicker from "../components/DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
-const workers = ["Ömer Kandemir", "Boş"];
+const workers = ["Ömer Kandemir", "Ahmet"];
 
 export default function AdminPanel({ appointments, cancelAppointment, busyHours, setBusyHours }) {
   const [kuafor, setKuafor] = useState("Ömer Kandemir");
@@ -88,7 +88,7 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                   bg = "#f1c40f";
                   textColor = "#222";
                 } else if (selected) {
-                  bg = "#222";
+                  bg = "#e74c3c";
                   textColor = "#fff";
                 }
                 
