@@ -1,18 +1,82 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  background: #2c3e50;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
+}
+
+/* Hareketli parçacıklar */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-40px) translateX(0px);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translateY(-20px) translateX(-10px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Arka plan parçacıkları */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(52, 152, 219, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(46, 204, 113, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 20%, rgba(155, 89, 182, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+  animation: shimmer 15s infinite;
 }
 
 .container {
   max-width: 430px;
   margin: 2rem auto;
-  background: #34495e;
+  background: rgba(52, 73, 94, 0.95);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+              0 0 40px rgba(52, 152, 219, 0.15);
   padding: 2rem 1.5rem;
+  position: relative;
+  z-index: 2;
+  border: 1px solid rgba(52, 152, 219, 0.2);
+  animation: float 8s ease-in-out infinite;
 }
 
 h1 {
@@ -23,6 +87,9 @@ h1 {
   letter-spacing: 1px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
+  text-shadow: 0 0 20px rgba(52, 152, 219, 0.5), 
+               0 0 40px rgba(46, 204, 113, 0.3);
+  animation: pulse 3s ease-in-out infinite;
 }
 
 h2, h3 {
@@ -30,6 +97,7 @@ h2, h3 {
   font-weight: 600;
   letter-spacing: 0.5px;
   color: #ecf0f1;
+  text-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
 }
 
 .appointment-form {
@@ -68,18 +136,37 @@ h2, h3 {
 }
 
 .appointment-form button {
-  background: #3498db;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: #fff;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
   letter-spacing: 0.5px;
+  box-shadow: 0 0 15px rgba(52, 152, 219, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.appointment-form button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.appointment-form button:hover:not(:disabled)::before {
+  left: 100%;
 }
 
 .appointment-form button:hover:not(:disabled) {
-  background: #2980b9;
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+  box-shadow: 0 0 25px rgba(52, 152, 219, 0.6),
+              0 0 40px rgba(52, 152, 219, 0.4);
   transform: translateY(-2px);
 }
 
