@@ -79,7 +79,10 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
             <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "0.8rem" }}>Saatler:</p>
             <div style={{display: "flex", flexWrap: "wrap", gap: "6px"}}>
               {hours.map((h) => {
-                const isBusy = busyHours[selectedDate]?.[kuafor]?.includes(h);
+                const hasAppointment = appointments.some(
+                  (a) => a.date === selectedDate && a.hour === h && a.kuafor === kuafor
+                );
+                const isBusy = busyHours[selectedDate]?.[kuafor]?.includes(h) || hasAppointment;
                 const selected = selectedHour === h;
                 let bg = "#4caf50";
                 let textColor = "#fff";
