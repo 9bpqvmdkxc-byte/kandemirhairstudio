@@ -3,6 +3,7 @@ import DatePicker from "./DatePicker";
 
 const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
 const services = ["Saç", "Sakal", "Saç + Sakal", "Çocuk Saçı", "Saç Yıkama", "Fön", "Keratin", "Cilt Bakımı", "Damat Traşı"];
+const workers = ["Ömer Kandemir", "Muhammet Ali Kandemir", "Velat bukan", "Eyüp özdoğan"];
 
 export default function AppointmentForm({ addAppointment, appointments, busyHours }) {
   const [name, setName] = useState("");
@@ -62,8 +63,11 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
       />
       <DatePicker value={date} onChange={setDate} />
       <select value={kuafor} onChange={(e) => setKuafor(e.target.value)}>
-        <option>Ömer Kandemir</option>
-        <option>Boş</option>
+        {workers.map((w) => (
+          <option key={w} value={w}>
+            {w}
+          </option>
+        ))}
       </select>
       <select value={service} onChange={(e) => setService(e.target.value)}>
         {services.map((s) => (

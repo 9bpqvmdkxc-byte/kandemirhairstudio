@@ -181,6 +181,34 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
             >
               🚫 Tüm Gün Kapalı
             </button>
+
+            <button
+              style={{
+                background: "#27ae60",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                padding: "10px 16px",
+                cursor: "pointer",
+                fontWeight: "bold",
+                transition: "all 0.2s"
+              }}
+              onClick={() => {
+                setBusyHours((prev) => {
+                  const prevDay = prev[selectedDate] || {};
+                  return {
+                    ...prev,
+                    [selectedDate]: {
+                      ...prevDay,
+                      [kuafor]: [],
+                    },
+                  };
+                });
+                setSelectedHour(null);
+              }}
+            >
+              ✅ Tüm Gün Açık
+            </button>
           </div>
         )}
       </div>
