@@ -328,6 +328,56 @@ export default function App() {
           />
         </>
       )}
+
+      {/* Footer */}
+      <div style={{
+        marginTop: "3rem",
+        paddingTop: "2rem",
+        borderTop: "2px solid rgba(52, 152, 219, 0.3)",
+        textAlign: "center"
+      }}>
+        <p style={{ 
+          color: "#b0bec5", 
+          fontSize: "0.85rem",
+          margin: "0.5rem 0"
+        }}>
+          © 2025 Kandemir Hair Studio
+        </p>
+        <p style={{ 
+          color: "#b0bec5", 
+          fontSize: "0.85rem",
+          margin: "0.5rem 0"
+        }}>
+          Website by <span style={{ 
+            color: "#3498db", 
+            fontWeight: "600",
+            textDecoration: "none"
+          }}>Avenue Creative</span>
+        </p>
+        <a 
+          href="https://www.avenuerentacar.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "#3498db",
+            textDecoration: "none",
+            fontSize: "0.85rem",
+            transition: "all 0.3s",
+            display: "inline-block",
+            padding: "0.25rem 0"
+          }}
+          onMouseOver={(e) => {
+            e.target.style.color = "#2980b9";
+            e.target.style.textDecoration = "underline";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.color = "#3498db";
+            e.target.style.textDecoration = "none";
+          }}
+        >
+          www.avenuerentacar.com
+        </a>
+      </div>
     </div>
   );
 }
