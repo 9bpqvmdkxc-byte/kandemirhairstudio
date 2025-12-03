@@ -29,6 +29,18 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Telefon numarası validasyonu - 0 ile başlamalı ve 11 hane olmalı
+    if (!phone.startsWith('0')) {
+      alert('❌ Telefon numarası 0 ile başlamalıdır!');
+      return;
+    }
+    
+    if (phone.length !== 11) {
+      alert('❌ Telefon numarası 11 hane olmalıdır!');
+      return;
+    }
+    
     if (!name || !surname || !phone || !date || hour === null) return;
     
     const newAppointment = { name, surname, phone, date, hour, kuafor, service };
@@ -67,9 +79,17 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
       />
       <input
         type="tel"
-        placeholder="Telefon"
+        placeholder="Telefon (11 hane)"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={(e) => {
+          // Sadece rakamları al
+          const onlyNumbers = e.target.value.replace(/[^0-9]/g, '');
+          // Maksimum 11 hane
+          if (onlyNumbers.length <= 11) {
+            setPhone(onlyNumbers);
+          }
+        }}
+        maxLength="11"
         required
       />
       <DatePicker value={date} onChange={setDate} />

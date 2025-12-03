@@ -8,6 +8,7 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
   const [kuafor, setKuafor] = useState("⭐ Ömer Kandemir");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedHour, setSelectedHour] = useState(null);
+  const [calledCustomers, setCalledCustomers] = useState({}); // Çağrılan müşteriler
 
   // Sadece seçili kuaförün ve seçili tarihin randevuları
   const filteredAppointments = appointments.filter(
@@ -35,6 +36,56 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
         },
       };
     });
+  };
+
+  // Müşteri geçmişini hesapla (sadece onaylanan randevular)
+  const customerHistory = {};
+  appointments.forEach((app) => {
+    // Sadece onaylanan randevuları say
+    if (app.status !== "confirmed") return;
+    
+    const customerName = `${app.name} ${app.surname}`;
+    if (!customerHistory[customerName]) {
+      customerHistory[customerName] = {
+        count: 0,
+        phone: app.phone,
+        services: [],
+        lastVisit: null
+      };
+    }
+    customerHistory[customerName].count++;
+    if (app.service && !customerHistory[customerName].services.includes(app.service)) {
+      customerHistory[customerName].services.push(app.service);
+    }
+    // Son ziyareti güncelle
+    if (!customerHistory[customerName].lastVisit || new Date(app.date) > new Date(customerHistory[customerName].lastVisit)) {
+      customerHistory[customerName].lastVisit = app.date;
+    }
+  });
+
+  // Sıralanmış müşteri listesi (en çok gelenlerin başında)
+  const sortedCustomers = Object.entries(customerHistory)
+    .sort((a, b) => b[1].count - a[1].count);
+
+  // 1 aydan fazla süredir gelmeyen müşteriler
+  const today = new Date();
+  const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+  const inactiveCustomers = Object.entries(customerHistory)
+    .filter(([customerName, data]) => {
+      // Eğer zaten çağrıldıysa listeden çıkar
+      if (calledCustomers[customerName]) return false;
+      if (!data.lastVisit) return false;
+      const lastVisitDate = new Date(data.lastVisit);
+      return lastVisitDate < oneMonthAgo;
+    })
+    .sort((a, b) => new Date(a[1].lastVisit) - new Date(b[1].lastVisit));
+
+  // Müşteri çağır
+  const markAsCalled = (customerName) => {
+    setCalledCustomers(prev => ({
+      ...prev,
+      [customerName]: true
+    }));
   };
 
   return (
@@ -237,7 +288,12 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
       )}
       
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {filteredAppointments.map((app, idx) => (
+        {filteredAppointments.map((app, idx) => {
+          // Müşterinin toplam ziyaret sayısını bul
+          const customerName = `${app.name} ${app.surname}`;
+          const visitCount = customerHistory[customerName]?.count || 0;
+          
+          return (
           <div
             key={idx}
             style={{
@@ -249,11 +305,30 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
               flexDirection: "column",
               gap: "12px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-              transition: "all 0.2s"
+              transition: "all 0.2s",
+              position: "relative"
             }}
           >
-            {/* Üst kısım: Bilgiler */}
-            <div>
+            {/* Ziyaret Sayısı - Sağ Üst Köşe */}
+            {visitCount > 0 && (
+              <div style={{
+                position: "absolute",
+                top: "12px",
+                right: "12px",
+                background: app.status === "confirmed" ? "#28a745" : "#ffc107",
+                color: app.status === "confirmed" ? "#fff" : "#333",
+                padding: "8px 14px",
+                borderRadius: "20px",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
+              }}>
+                ✂️ {visitCount}x
+              </div>
+            )}
+            
+            {/* Üst kısım: Bilgiler - Sağ tarafta padding ekle */}
+            <div style={{ paddingRight: visitCount > 0 ? "90px" : "0" }}>
               <div style={{ 
                 display: "flex", 
                 alignItems: "center", 
@@ -365,8 +440,111 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
+
+      {/* Modal: 1 Aydan Fazla Süredir Gelmeyen Müşteriler */}
+      {inactiveCustomers.length > 0 && (
+        <div style={{
+          background: "linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%)",
+          borderRadius: "12px",
+          padding: "1.5rem",
+          marginTop: "3rem",
+          border: "2px solid #f5c6cb"
+        }}>
+          <h3 style={{ color: "#721c24", marginBottom: "1.5rem", marginTop: "0", paddingBottom: "1rem", borderBottom: "2px solid #f5c6cb", textAlign: "center" }}>
+            ⚠️ 1 Aydan Fazla Süredir Gelmeyen Müşteriler ({inactiveCustomers.length})
+          </h3>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "12px" }}>
+            {inactiveCustomers.map(([customerName, data]) => {
+              const lastVisitDate = new Date(data.lastVisit);
+              const daysSinceVisit = Math.floor((today - lastVisitDate) / (1000 * 60 * 60 * 24));
+              
+              return (
+                <div
+                  key={customerName}
+                  style={{
+                    background: "#fff",
+                    border: "2px solid #f5c6cb",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px"
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ margin: "0", fontWeight: "bold", color: "#721c24", fontSize: "1rem" }}>
+                        {customerName}
+                      </p>
+                    </div>
+                    <span style={{
+                      background: "#f8d7da",
+                      color: "#721c24",
+                      padding: "4px 10px",
+                      borderRadius: "20px",
+                      fontSize: "0.85rem",
+                      fontWeight: "bold",
+                      whiteSpace: "nowrap"
+                    }}>
+                      {daysSinceVisit} gün
+                    </span>
+                  </div>
+                  
+                  <p style={{ margin: "0", color: "#666", fontSize: "0.85rem" }}>
+                    📱 {data.phone}
+                  </p>
+                  
+                  <p style={{ margin: "0", color: "#856404", fontSize: "0.85rem", background: "#fff3cd", padding: "6px 8px", borderRadius: "4px" }}>
+                    📅 {new Date(data.lastVisit).toLocaleDateString("tr-TR")}
+                  </p>
+                  
+                  {data.services.length > 0 && (
+                    <p style={{ margin: "0", color: "#555", fontSize: "0.85rem" }}>
+                      ✂️ {data.services.join(", ")}
+                    </p>
+                  )}
+                  
+                  <p style={{ margin: "0", color: "#666", fontSize: "0.85rem", fontWeight: "bold" }}>
+                    {data.count} ziyaret
+                  </p>
+
+                  <button
+                    onClick={() => markAsCalled(customerName)}
+                    style={{
+                      background: "#28a745",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "6px",
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      fontSize: "0.85rem",
+                      transition: "all 0.2s",
+                      width: "100%",
+                      marginTop: "6px"
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.background = "#218838";
+                      e.target.style.boxShadow = "0 2px 6px rgba(33, 136, 56, 0.3)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.background = "#28a745";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  >
+                    ✅ TAMAM
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
