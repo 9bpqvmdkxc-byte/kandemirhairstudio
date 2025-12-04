@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import DatePicker from "../components/DatePicker";
 
-const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
+const hours = (() => {
+  const result = [];
+  for (let h = 9; h < 23; h++) {
+    result.push({ hour: h, minute: 0, display: `${h}:00` });
+    if (h < 22) {
+      result.push({ hour: h, minute: 30, display: `${h}:30` });
+    }
+  }
+  return result;
+})(); // 9:00 - 22:30
 const workers = ["⭐ Ömer Kandemir", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
 
 export default function AdminPanel({ appointments, cancelAppointment, busyHours, setBusyHours, confirmAppointment }) {
@@ -131,14 +140,15 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
             <div style={{display: "flex", flexWrap: "wrap", gap: "6px"}}>
               {hours.map((h) => {
                 const hasAppointment = appointments.some(
-                  (a) => a.date === selectedDate && a.hour === h && a.kuafor === kuafor
+                  (a) => a.date === selectedDate && a.hour === h.hour && a.minute === h.minute && a.kuafor === kuafor
                 );
-                const isBusy = busyHours[selectedDate]?.[kuafor]?.includes(h) || hasAppointment;
-                const selected = selectedHour === h;
+                const hourStr = `${h.hour}:${String(h.minute).padStart(2, '0')}`;
+                const isBusy = busyHours[selectedDate]?.[kuafor]?.includes(hourStr) || hasAppointment;
+                const selected = selectedHour?.hour === h.hour && selectedHour?.minute === h.minute;
                 
                 // Randevu yapan kişinin baş harflerini bul
                 const appointment = appointments.find(
-                  (a) => a.date === selectedDate && a.hour === h && a.kuafor === kuafor
+                  (a) => a.date === selectedDate && a.hour === h.hour && a.minute === h.minute && a.kuafor === kuafor
                 );
                 const initials = appointment ? `${appointment.name[0]}.${appointment.surname[0]}` : "";
                 
@@ -155,7 +165,7 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 
                 return (
                   <button
-                    key={h}
+                    key={`${h.hour}-${h.minute}`}
                     type="button"
                     style={{
                       background: bg,
@@ -176,7 +186,7 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                     }}
                     onClick={() => setSelectedHour(h)}
                   >
-                    <div>{h}:00</div>
+                    <div>{h.display}</div>
                     {initials && <div style={{ fontSize: "10px", marginTop: "2px" }}>{initials}</div>}
                   </button>
                 );
@@ -189,7 +199,10 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
           <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
             <button
               style={{
-                background: busyHours[selectedDate]?.[kuafor]?.includes(selectedHour) ? "#888" : "#f1c40f",
+                background: (() => {
+                  const hourStr = `${selectedHour.hour}:${String(selectedHour.minute).padStart(2, '0')}`;
+                  return busyHours[selectedDate]?.[kuafor]?.includes(hourStr) ? "#888" : "#f1c40f";
+                })(),
                 color: "#222",
                 border: "none",
                 borderRadius: "6px",
@@ -199,14 +212,15 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 transition: "all 0.2s"
               }}
               onClick={() => {
+                const hourStr = `${selectedHour.hour}:${String(selectedHour.minute).padStart(2, '0')}`;
                 setBusyHours((prev) => {
                   const prevDay = prev[selectedDate] || {};
                   const prevKuafor = prevDay[kuafor] || [];
                   let newKuafor;
-                  if (prevKuafor.includes(selectedHour)) {
-                    newKuafor = prevKuafor.filter((h) => h !== selectedHour);
+                  if (prevKuafor.includes(hourStr)) {
+                    newKuafor = prevKuafor.filter((h) => h !== hourStr);
                   } else {
-                    newKuafor = [...prevKuafor, selectedHour];
+                    newKuafor = [...prevKuafor, hourStr];
                   }
                   return {
                     ...prev,
@@ -218,7 +232,10 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                 });
               }}
             >
-              {busyHours[selectedDate]?.[kuafor]?.includes(selectedHour) ? "Meşgulden Çıkar" : "Meşgul Yap"}
+              {(() => {
+                const hourStr = `${selectedHour.hour}:${String(selectedHour.minute).padStart(2, '0')}`;
+                return busyHours[selectedDate]?.[kuafor]?.includes(hourStr) ? "Meşgulden Çıkar" : "Meşgul Yap";
+              })()}
             </button>
 
             <button
@@ -346,7 +363,7 @@ export default function AdminPanel({ appointments, cancelAppointment, busyHours,
                   minWidth: "90px",
                   textAlign: "center"
                 }}>
-                  {app.hour}:00
+                  {app.hour}:{String(app.minute || 0).padStart(2, '0')}
                 </span>
                 <span style={{ color: "#666", fontSize: "0.9rem" }}>
                   📅 {app.date}

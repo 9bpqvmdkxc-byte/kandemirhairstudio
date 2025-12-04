@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import DatePicker from "./DatePicker";
 
-const hours = Array.from({ length: 14 }, (_, i) => 9 + i); // 9-22
+// 9:00 - 22:30 arası saatler (buçuklu)
+const hours = [];
+for (let h = 9; h < 23; h++) {
+  hours.push({ hour: h, minute: 0, display: `${h}:00` });
+  if (h < 22) {
+    hours.push({ hour: h, minute: 30, display: `${h}:30` });
+  }
+}
 const services = ["Saç", "Sakal", "Saç + Sakal", "Çocuk Saçı", "Saç Yıkama", "Fön", "Keratin", "Cilt Bakımı", "Damat Traşı"];
 const workers = ["⭐ Ömer Kandemir", "Muhammet Ali Kandemir", "Velat Bukan", "Eyüp Özdoğan"];
 
@@ -16,16 +23,21 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
   const [successMessage, setSuccessMessage] = useState(false);
   const [successName, setSuccessName] = useState("");
 
-  const isHourBusy = (h) =>
-    appointments.some(
+  const isHourBusy = (h) => {
+    const hourStr = `${h.hour}:${String(h.minute).padStart(2, '0')}`;
+    return appointments.some(
       (a) =>
         a.date === date &&
-        a.hour === h &&
+        a.hour === h.hour &&
+        a.minute === h.minute &&
         a.kuafor === kuafor
-    ) || (busyHours[date]?.[kuafor]?.includes(h));
+    ) || (busyHours[date]?.[kuafor]?.includes(hourStr));
+  };
 
-  const isHourMeşgul = (h) =>
-    busyHours[date]?.[kuafor]?.includes(h);
+  const isHourMeşgul = (h) => {
+    const hourStr = `${h.hour}:${String(h.minute).padStart(2, '0')}`;
+    return busyHours[date]?.[kuafor]?.includes(hourStr);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,7 +55,16 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
     
     if (!name || !surname || !phone || !date || hour === null) return;
     
-    const newAppointment = { name, surname, phone, date, hour, kuafor, service };
+    const newAppointment = { 
+      name, 
+      surname, 
+      phone, 
+      date, 
+      hour: hour.hour,
+      minute: hour.minute,
+      kuafor, 
+      service 
+    };
     addAppointment(newAppointment); // Firebase'e gönder (async)
     setSuccessName(`${name[0]}.${surname[0]}`);
     setSuccessMessage(true);
@@ -111,26 +132,26 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
         {hours.map((h) => {
           const busy = isHourBusy(h);
           const meşgul = isHourMeşgul(h);
-          const selected = hour === h;
+          const selected = hour?.hour === h.hour && hour?.minute === h.minute;
           
           // Randevu yapan kişinin baş harflerini bul
           const appointment = appointments.find(
-            (a) => a.date === date && a.hour === h && a.kuafor === kuafor
+            (a) => a.date === date && a.hour === h.hour && a.minute === h.minute && a.kuafor === kuafor
           );
           const initials = appointment ? `${appointment.name[0]}.${appointment.surname[0]}` : "";
           
           let bg = "#4caf50"; // yeşil
-          let label = `${h}:00`;
+          let label = h.display;
           
           if (busy) {
             bg = "#e74c3c"; // kırmızı - randevu alınmış
-            label = `${h}:00 ${initials}`;
+            label = `${h.display} ${initials}`;
           } else if (meşgul) {
             bg = "#f1c40f"; // sarı - meşgul saati
-            label = `${h}:00 MEŞGUL`;
+            label = `${h.display} MEŞGUL`;
           } else if (selected) {
             bg = "#f1c40f"; // sarı - seçilmiş
-            label = `${h}:00`;
+            label = h.display;
           }
           
           const handleHourClick = () => {
@@ -144,7 +165,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
             if (appointment && name && surname && 
                 appointment.name === name && appointment.surname === surname) {
               const appointmentIndex = appointments.findIndex(
-                (a) => a.date === date && a.hour === h && a.kuafor === kuafor
+                (a) => a.date === date && a.hour === h.hour && a.minute === h.minute && a.kuafor === kuafor
               );
               if (appointmentIndex !== -1) {
                 cancelAppointment(appointmentIndex);
@@ -157,7 +178,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
 
           return (
             <button
-              key={h}
+              key={`${h.hour}-${h.minute}`}
               type="button"
               style={{
                 background: bg,
@@ -179,7 +200,7 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
               onClick={handleHourClick}
               title={appointment && name && surname && appointment.name === name && appointment.surname === surname ? "Randevuyu iptal etmek için tıkla" : ""}
             >
-              <div>{h}:00</div>
+              <div>{h.display}</div>
               {initials && <div style={{ fontSize: "10px", marginTop: "2px" }}>{initials}</div>}
             </button>
           );
