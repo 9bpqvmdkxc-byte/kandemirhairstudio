@@ -39,14 +39,7 @@ export default function DatePicker({ value = "", onChange }) {
 
     return result;
   }, [displayMonth]);
-
-  const filteredDays = days.map((day) => {
-    if (isBeforeToday(day) || isBeyondLimit(day)) {
-      return null;
-    }
-    return day;
-  });
-
+  // Yardımcılar önce tanımlanmalı (TDZ hatasını önlemek için)
   const formatDate = (day) => {
     const date = new Date(displayMonth.getFullYear(), displayMonth.getMonth(), day);
     const year = date.getFullYear();
@@ -78,9 +71,20 @@ export default function DatePicker({ value = "", onChange }) {
     const dateStr = formatDate(day);
     const limitDate = new Date();
     limitDate.setDate(limitDate.getDate() + 15);
-    const limitDateStr = formatDate(limitDate.getDate());
+    const limitYear = limitDate.getFullYear();
+    const limitMonth = String(limitDate.getMonth() + 1).padStart(2, '0');
+    const limitDayStr = String(limitDate.getDate()).padStart(2, '0');
+    const limitDateStr = `${limitYear}-${limitMonth}-${limitDayStr}`;
     return dateStr > limitDateStr;
   };
+
+  // Filtreleme fonksiyonları tanımlandıktan sonra günleri hesapla
+  const filteredDays = days.map((day) => {
+    if (isBeforeToday(day) || isBeyondLimit(day)) {
+      return null;
+    }
+    return day;
+  });
 
   const handlePrevMonth = () => {
     setDisplayMonth(new Date(displayMonth.getFullYear(), displayMonth.getMonth() - 1));
