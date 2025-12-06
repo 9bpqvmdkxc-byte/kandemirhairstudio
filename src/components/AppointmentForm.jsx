@@ -113,7 +113,20 @@ export default function AppointmentForm({ addAppointment, appointments, busyHour
         maxLength="11"
         required
       />
-      <DatePicker value={date} onChange={setDate} />
+      <DatePicker 
+        value={date} 
+        onChange={(newDate) => {
+          const today = new Date();
+          const maxDate = new Date();
+          maxDate.setDate(today.getDate() + 15);
+
+          if (new Date(newDate) > maxDate) {
+            alert("Randevu en fazla 15 gün ileriye alınabilir.");
+            return;
+          }
+          setDate(newDate);
+        }} 
+      />
       <select value={kuafor} onChange={(e) => setKuafor(e.target.value)}>
         {workers.map((w) => (
           <option key={w} value={w}>

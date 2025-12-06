@@ -40,6 +40,13 @@ export default function DatePicker({ value = "", onChange }) {
     return result;
   }, [displayMonth]);
 
+  const filteredDays = days.map((day) => {
+    if (isBeforeToday(day) || isBeyondLimit(day)) {
+      return null;
+    }
+    return day;
+  });
+
   const formatDate = (day) => {
     const date = new Date(displayMonth.getFullYear(), displayMonth.getMonth(), day);
     const year = date.getFullYear();
@@ -64,6 +71,15 @@ export default function DatePicker({ value = "", onChange }) {
     if (!day) return false;
     const dateStr = formatDate(day);
     return dateStr < todayStr;
+  };
+
+  const isBeyondLimit = (day) => {
+    if (!day) return false;
+    const dateStr = formatDate(day);
+    const limitDate = new Date();
+    limitDate.setDate(limitDate.getDate() + 15);
+    const limitDateStr = formatDate(limitDate.getDate());
+    return dateStr > limitDateStr;
   };
 
   const handlePrevMonth = () => {
@@ -130,14 +146,14 @@ export default function DatePicker({ value = "", onChange }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}>
-        {days.map((day, idx) => {
+        {filteredDays.map((day, idx) => {
           if (!day) {
             return <div key={`empty-${idx}`}></div>;
           }
 
           const dateStr = formatDate(day);
           const selected = isSelected(day);
-          const disabled = isBeforeToday(day);
+          const disabled = isBeforeToday(day) || isBeyondLimit(day);
 
           return (
             <button
